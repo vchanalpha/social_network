@@ -1,4 +1,4 @@
-import { style } from "./style";
+import { style } from "./style.js";
 
 class Post {
   constructor(id, name, message) {

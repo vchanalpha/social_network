@@ -1,3 +1,4 @@
+import Post from "./post.js";
 import { toSnakeCase } from "./utils.js";
 
 class User {
@@ -26,7 +27,7 @@ class User {
   }
 
   post(message) {
-    this.timeline.push(Post(this.id, this.name, message));
+    this.timeline.push(new Post(this.id, this.name, message));
   }
 }
 
