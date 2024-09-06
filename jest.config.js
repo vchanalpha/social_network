@@ -1,3 +1,4 @@
-module.exports = {
-  testEnvironment: "node",
-};
+/** @type {import('jest').Config} */
+const config = {};
+
+module.exports = config;
