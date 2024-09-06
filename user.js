@@ -11,10 +11,14 @@ class User {
 
   // Getters
   getWall() {
-    forEach.wall(console.log);
+    this.wall.forEach((post) => {
+      post.print();
+    });
   }
   getTimeline() {
-    forEach.timeline(console.log);
+    this.timeline.forEach((post) => {
+      post.print();
+    });
   }
 
   // Methods

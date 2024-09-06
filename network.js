@@ -1,5 +1,6 @@
 import { input, select, Separator } from "@inquirer/prompts";
 import User from "./user.js";
+import { validateName } from "./utils.js";
 
 class Network {
   constructor(name) {
@@ -18,7 +19,9 @@ class Network {
   }
 
   addUser = async (name) => {
-    this.users = [...this.users, new User(name)];
+    const newUser = new User(name);
+    this.currentUserId = newUser.id;
+    this.users = [...this.users, newUser];
   };
 
   post = async () => {
@@ -32,23 +35,37 @@ class Network {
   };
 
   register = async () => {
-    await input({ message: "What's the new user's name?" }).then((name) => {
-      this.addUser(name);
-    });
+    await input({
+      message: "What's the new user's name?",
+      validate: validateName,
+    })
+      .then((name) => {
+        if (this.users.find((user) => user.name === name)) {
+          console.log(`A user with the name ${name} already exists.`);
+          this.register();
+        } else {
+          this.addUser(name);
+          this.menu();
+        }
+      })
+      .finally(() => {});
   };
 
   login = async () => {
-    const choices = network.users.map(({ id, name }) => ({
+    const choices = this.users.map(({ id, name }) => ({
       name,
       value: id,
     }));
     await select({
       message: "Select your user account",
       choices,
-    }).then((value) => {
-      network.currentUser = value;
-      userMenu();
-    });
+    })
+      .then((value) => {
+        this.currentUser = value;
+      })
+      .finally(() => {
+        this.menu();
+      });
   };
 
   timeline = async () => {

@@ -19,4 +19,3 @@ test("the user can follow a new friend and view list of subscriptions", () => {
 test("the user can view the posts on their wall", () => {
   expect(bestLaCroixFlavor()).toBe("grapefruit");
 });
-

@@ -1,17 +1,19 @@
-import { style } from "./style.js";
+import { formatTimeStamp } from "./utils.js";
 
 class Post {
-  constructor(id, name, message, timestamp) {
+  constructor(id, name, message) {
     this.id = id;
     this.name = name;
     this.message = message;
-    this.timestamp = timestamp;
+    this.timestamp = Date.now();
   }
 
   // Methods
   print() {
-    console.log(`%c${this.name}`, style.name);
+    console.log(`[%s]`, this.name);
     console.log(this.message);
+    console.log(formatTimeStamp(this.timestamp));
+    console.log("");
   }
 }
 

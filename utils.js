@@ -32,3 +32,16 @@ export const validateName = (varName) => {
   const pat = /^[a-zA-Z]{1,}(?: [a-zA-Z]+){0,2}$/;
   return pat.test(varName);
 };
+
+export const formatTimeStamp = (varName) => {
+  var d = new Date();
+
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date());
+};
