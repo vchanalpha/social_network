@@ -1,3 +1,5 @@
+import { toSnakeCase } from "./utils.js";
+
 class User {
   constructor(name) {
     this.id = toSnakeCase(name);
@@ -7,10 +9,10 @@ class User {
   }
 
   // Getters
-  get wall() {
+  getWall() {
     forEach.wall(console.log);
   }
-  get timeline() {
+  getTimeline() {
     forEach.timeline(console.log);
   }
 
@@ -21,6 +23,10 @@ class User {
 
   wall() {
     return;
+  }
+
+  post(message) {
+    this.timeline.push(Post(this.id, this.name, message));
   }
 }
 

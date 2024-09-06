@@ -1,9 +1,9 @@
 import { style } from "./style";
 
 class Post {
-  constructor(user, message) {
-    this.id = user.id;
-    this.name = user.name;
+  constructor(id, name, message) {
+    this.id = id;
+    this.name = name;
     this.message = message;
   }
 
