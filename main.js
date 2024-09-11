@@ -1,9 +1,9 @@
 /**
  */
 
-import { input } from "@inquirer/prompts";
-import Network from "./network.js";
-import { validateName } from "./utils.js";
+const { input } = require("@inquirer/prompts");
+const Network = require("./Network.js");
+const { validateName } = require("./utils.js");
 
 const init = async () => {
   await input({

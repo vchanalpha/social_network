@@ -1,4 +1,4 @@
-import { formatTimeStamp } from "./utils.js";
+const { formatTimeStamp } = require("./utils.js");
 
 class Post {
   constructor(id, name, message) {
@@ -17,4 +17,4 @@ class Post {
   }
 }
 
-export default Post;
+module.exports = Post;

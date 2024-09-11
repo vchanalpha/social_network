@@ -1,3 +1,5 @@
-export const style = {
+const style = {
   name: "color: hotpink;",
 };
+
+module.exports = style;

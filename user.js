@@ -1,5 +1,5 @@
-import Post from "./post.js";
-import { toSnakeCase } from "./utils.js";
+const Post = require("./post.js");
+const { toSnakeCase } = require("./utils.js");
 
 class User {
   constructor(name) {
@@ -35,4 +35,4 @@ class User {
   }
 }
 
-export default User;
+module.exports = User;

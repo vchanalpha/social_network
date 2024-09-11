@@ -1,7 +1,6 @@
-import { input, select, Separator } from "@inquirer/prompts";
-import User from "./user.js";
-import { validateName } from "./utils.js";
-
+const { input, select, Separator } = require("@inquirer/prompts");
+const User = require("./User.js");
+const { validateName } = require("./utils.js");
 class Network {
   constructor(name) {
     const user = new User(name);
@@ -104,4 +103,4 @@ class Network {
   };
 }
 
-export default Network;
+module.exports = Network;

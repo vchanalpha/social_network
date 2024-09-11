@@ -1,3 +1,5 @@
+const Network = require("./Network.js");
+
 const bestLaCroixFlavor = () => "grapefruit";
 
 test("the best flavor is grapefruit", () => {

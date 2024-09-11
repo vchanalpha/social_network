@@ -1,4 +1,4 @@
-export const toSnakeCase = (str) =>
+const toSnakeCase = (str) =>
   str &&
   str
     .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g) // Match words
@@ -13,7 +13,7 @@ export const toSnakeCase = (str) =>
  * @param {String} varName the name of the variable to check.
  * @returns `Boolean` return true if the string is in snake_case, else return false.
  */
-export const validateSnakeCase = (varName) => {
+const validateSnakeCase = (varName) => {
   // firstly, check that input is a string or not.
   if (typeof varName !== "string") {
     throw new TypeError("Argument is not a string.");
@@ -23,7 +23,7 @@ export const validateSnakeCase = (varName) => {
   return pat.test(varName);
 };
 
-export const validateName = (varName) => {
+const validateName = (varName) => {
   // firstly, check that input is a string or not.
   if (typeof varName !== "string") {
     throw new TypeError("Argument is not a string.");
@@ -33,7 +33,7 @@ export const validateName = (varName) => {
   return pat.test(varName);
 };
 
-export const formatTimeStamp = (varName) => {
+const formatTimeStamp = (varName) => {
   var d = new Date();
 
   return new Intl.DateTimeFormat("en-US", {
@@ -44,4 +44,11 @@ export const formatTimeStamp = (varName) => {
     minute: "2-digit",
     hour12: true,
   }).format(new Date());
+};
+
+module.exports = {
+  formatTimeStamp,
+  validateName,
+  validateSnakeCase,
+  toSnakeCase,
 };
