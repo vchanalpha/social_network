@@ -13,7 +13,7 @@ class Post {
     console.log(`[%s]`, this.name);
     console.log(this.message);
     console.log(formatTimeStamp(this.timestamp));
-    console.log("");
+    console.log(" ");
   }
 }
 
