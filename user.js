@@ -1,4 +1,5 @@
 const Post = require("./post.js");
+const Subscription = require("./subscription.js");
 const { toSnakeCase } = require("./utils.js");
 
 class User {
@@ -7,6 +8,7 @@ class User {
     this.name = name;
     this.timeline = [];
     this.wall = [];
+    this.subscriptions = [];
   }
 
   // Getters
@@ -21,9 +23,15 @@ class User {
     });
   }
 
+  getSubscriptions() {
+    this.subscriptions.forEach((post) => {
+      post.name.print();
+    });
+  }
+
   // Methods
-  follow() {
-    return;
+  follow(user) {
+    this.subscriptions.push(new Subscription(user));
   }
 
   wall() {

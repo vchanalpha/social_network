@@ -71,6 +71,27 @@ class Network {
     this.currentUser.getTimeline();
   };
 
+  follow = async () => {
+    let subscriptions = this.currentUser.subscriptions;
+    var choices = this.users.reduce(function(filtered, option) {
+      if (!subscriptions.includes(option.name)) {
+         var someNewValue = { name: option.name, value: option.name }
+         filtered.push(someNewValue);
+      }
+      return filtered;
+    }, []);
+    await select({
+      message: "Select a user to follow",
+      choices,
+    })
+      .then((value) => {
+        this.currentUser.follow(value);
+      })
+      .finally(() => {
+        this.menu();
+      });
+  };
+
   menu = async () => {
     await select({
       message: `Welcome to the Social Network ${this.currentUser.name}. What would you like to do now?`,
@@ -83,6 +104,21 @@ class Network {
         {
           name: "View my timeline",
           value: "timeline",
+          description: "",
+        },
+        {
+          name: "View timeline of user I have subscribed to",
+          value: "timeline",
+          description: "",
+        },
+        {
+          name: "Follow a new user",
+          value: "follow",
+          description: "",
+        },
+        {
+          name: "View my wall",
+          value: "wall",
           description: "",
         },
         new Separator(),
