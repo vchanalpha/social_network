@@ -1,37 +1,55 @@
 const Post = require("./post.js");
 const Subscription = require("./subscription.js");
-const { toSnakeCase } = require("./utils.js");
+const { convertNameToId } = require("./utils.js");
 
 class User {
   constructor(name) {
-    this.id = toSnakeCase(name);
+    this.id = convertNameToId(name);
     this.name = name;
     this.timeline = [];
     this.wall = [];
-    this.subscriptions = [];
+    this.subscriptions = {};
   }
 
   // Getters
   getWall() {
+    if (!this.wall.length) {
+      console.log("Your wall is empty.\n");
+      return;
+    }
     this.wall.forEach((post) => {
       post.print();
     });
   }
+
   getTimeline() {
+    if (!this.timeline.length) {
+      console.log("Your timeline is empty.\n");
+      return;
+    }
     this.timeline.forEach((post) => {
       post.print();
     });
   }
 
   getSubscriptions() {
-    this.subscriptions.forEach((post) => {
-      post.name.print();
+    if (!Object.values(this.subscriptions).keys) {
+      console.log("You have no subscriptions.\n");
+      return;
+    }
+    Object.values(this.subscriptions).forEach((subscription) => {
+      subscription.name.print();
     });
   }
 
   // Methods
-  follow(user) {
-    this.subscriptions.push(new Subscription(user));
+  follow(name) {
+    const id = convertNameToId(name);
+    if (!this.subscriptions[id]) {
+      this.subscriptions[id] = new Subscription(name);
+    } else {
+      console.log(`You are already following ${name}.\n`);
+    }
   }
 
   wall() {

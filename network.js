@@ -1,69 +1,103 @@
 const { input, select, Separator } = require("@inquirer/prompts");
-const User = require("./User.js");
-const { validateName } = require("./utils.js");
+const User = require("./user.js");
+const { validateName, convertNameToId } = require("./utils.js");
 class Network {
-  constructor(name) {
-    const user = new User(name);
-    this.users = [user];
-    this.currentUserId = user.id;
+  constructor(names) {
+    this.users = {};
+    this.currentUser = null;
+    this.init(names);
   }
 
-  // Getters
-  get currentUser() {
-    return this.users.find((user) => user.id === this.currentUserId);
+  styledPrompt(message) {
+    if (!this.currentUser) {
+      return `[No user selected] ${message}`;
+    }
+    return `[${this.currentUser.name}]  ${message}`;
   }
 
-  set currentUser(userId) {
-    this.currentUserId === userId;
-  }
+  init = async (names) => {
+    if (!names) {
+      await input({
+        message: this.styledPrompt(
+          "You're the first user on the Social Network! What's your name?"
+        ),
+        validate: validateName,
+      })
+        .then((name) => {
+          this.addUser(name);
+        })
+        .finally(() => {
+          this.backToMenu();
+        });
+    }
 
-  addUser = async (name) => {
-    const newUser = new User(name);
-    this.currentUserId = newUser.id;
-    this.users = [...this.users, newUser];
+    if (typeof names === "object") {
+      names.forEach((name) => {
+        this.addUser(name);
+      });
+      this.currentUser = null;
+      this.login();
+    }
+
+    if (typeof names === "string") {
+      this.addUser(names);
+      this.backToMenu();
+    }
+  };
+
+  addUser = async (name, onFail) => {
+    const id = convertNameToId(name);
+    if (!this.users[id]) {
+      this.users[id] = new User(name);
+      this.currentUser = this.users[id];
+    } else {
+      console.log(`A user with the name ${name} already exists.`);
+      if (onFail) {
+        onFail();
+      } else {
+        return;
+      }
+    }
   };
 
   post = async () => {
-    await input({ message: "What's your message?" })
+    await input({ message: this.styledPrompt("What's your message?") })
       .then((message) => {
         this.currentUser.post(message);
       })
       .finally(() => {
-        this.menu();
+        this.backToMenu();
       });
   };
 
   register = async () => {
     await input({
-      message: "What's the new user's name?",
+      message: this.styledPrompt("What's the new user's name?"),
       validate: validateName,
     })
       .then((name) => {
-        if (this.users.find((user) => user.name === name)) {
-          console.log(`A user with the name ${name} already exists.`);
-          this.register();
-        } else {
-          this.addUser(name);
-          this.menu();
-        }
+        this.addUser(name, this.register);
       })
-      .finally(() => {});
+      .finally(() => {
+        this.backToMenu();
+      });
   };
 
   login = async () => {
-    const choices = this.users.map(({ id, name }) => ({
+    const choices = Object.values(this.users).map(({ id, name }) => ({
       name,
       value: id,
     }));
     await select({
-      message: "Select your user account",
+      message: this.styledPrompt("Select your user account"),
       choices,
+      loop: false,
     })
       .then((value) => {
-        this.currentUser = value;
+        this.currentUser = this.users[value];
       })
       .finally(() => {
-        this.menu();
+        this.backToMenu();
       });
   };
 
@@ -72,30 +106,44 @@ class Network {
     this.menu();
   };
 
+  wall = async () => {
+    this.currentUser.getWall();
+    this.menu();
+  };
+
   follow = async () => {
     let subscriptions = this.currentUser.subscriptions;
-    var choices = this.users.reduce(function (filtered, option) {
-      if (!subscriptions.includes(option.name)) {
-        var someNewValue = { name: option.name, value: option.name };
-        filtered.push(someNewValue);
+    var choices = Object.values(this.users).reduce((filtered, option) => {
+      if (!subscriptions[option.id]) {
+        filtered.push({ name: option.name, value: option.name });
       }
       return filtered;
     }, []);
     await select({
-      message: "Select a user to follow",
+      message: this.styledPrompt("Select a user to follow"),
       choices,
+      loop: false,
     })
       .then((value) => {
         this.currentUser.follow(value);
       })
       .finally(() => {
-        this.menu();
+        this.backToMenu();
       });
+  };
+
+  backToMenu = () => {
+    console.log("\n");
+    this.menu();
   };
 
   menu = async () => {
     await select({
-      message: `Welcome to the Social Network ${this.currentUser.name}. What would you like to do now?`,
+      loop: false,
+      pageSize: 10,
+      message: this.styledPrompt(
+        `Welcome to the Social Network. What would you like to do now?`
+      ),
       choices: [
         {
           name: "Post a message",
@@ -135,6 +183,7 @@ class Network {
         },
       ],
     }).then((value) => {
+      console.log("\n");
       this[value]();
     });
   };

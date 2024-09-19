@@ -1,5 +1,6 @@
-const Network = require("./Network.js");
-const User = require("./User.js");
+const Network = require("./network.js");
+const User = require("./user.js");
+const { convertNameToId } = require("./utils.js");
 
 const bestLaCroixFlavor = () => "grapefruit";
 
@@ -9,16 +10,26 @@ const testMessage = "timeline message!";
 
 test("the social network can be created with an initial user", () => {
   const network = new Network(testUser);
-  expect(network.users[0]).toEqual(new User(testUser));
+  expect(network.users[convertNameToId(testUser)]).toEqual(new User(testUser));
 });
 
 test("the social network can add new users", () => {
   const network = new Network(testUser);
   network.addUser(testUser2);
-  expect(network.users.find((user) => user.name === testUser2))
-    .toBeInstanceOf(User)
-    .toMatchObject(new User(testUser2))
-    .toHaveProperty("name", testUser2);
+  const matchedUser = network.users[convertNameToId(testUser2)];
+
+  expect(matchedUser).toMatchObject(new User(testUser2));
+  expect(matchedUser).toHaveProperty("name", testUser2);
+  expect(matchedUser).toBeInstanceOf(User);
+});
+
+test("the social network will not add duplicate users", () => {
+  const network = new Network(testUser);
+  network.addUser(testUser);
+
+  console.log(Object.keys(network.users).length);
+
+  expect(Object.keys(network.users).length).toEqual(1);
 });
 
 test("the user can post a message to their timeline", () => {
@@ -42,7 +53,4 @@ test("the user can follow a new friend and view list of subscriptions", () => {
 
 test("the user can view the posts on their wall", () => {
   expect(bestLaCroixFlavor()).toBe("grapefruit");
-  
 });
-
-

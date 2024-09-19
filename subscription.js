@@ -1,8 +1,8 @@
-const { toSnakeCase } = require("./utils.js");
+const { convertNameToId } = require("./utils.js");
 
 class Subscription {
   constructor(name) {
-    this.id = toSnakeCase(name);
+    this.id = convertNameToId(name);
     this.name = name;
     this.timestamp = new Date(Date.now()).toISOString();
   }
