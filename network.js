@@ -69,14 +69,15 @@ class Network {
 
   timeline = async () => {
     this.currentUser.getTimeline();
+    this.menu();
   };
 
   follow = async () => {
     let subscriptions = this.currentUser.subscriptions;
-    var choices = this.users.reduce(function(filtered, option) {
+    var choices = this.users.reduce(function (filtered, option) {
       if (!subscriptions.includes(option.name)) {
-         var someNewValue = { name: option.name, value: option.name }
-         filtered.push(someNewValue);
+        var someNewValue = { name: option.name, value: option.name };
+        filtered.push(someNewValue);
       }
       return filtered;
     }, []);
