@@ -24,14 +24,15 @@ class User {
   }
 
   getSubscriptions() {
-    this.subscriptions.forEach((post) => {
-      post.name.print();
+    this.subscriptions.forEach((subscription) => {
+      subscription.print();
     });
   }
 
   // Methods
   follow(user) {
     this.subscriptions.push(new Subscription(user));
+    this.getSubscriptions();
   }
 
   wall() {
