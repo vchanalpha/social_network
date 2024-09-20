@@ -52,9 +52,7 @@ class User {
     }
   }
 
-  wall() {
-    return;
-  }
+  getWall() {}
 
   post(message) {
     this.timeline.push(new Post(this.id, this.name, message));

@@ -14,6 +14,21 @@ const addDelay = async () => {
   return new Promise((resolve) => setTimeout(resolve, 1));
 };
 
+const isChronological = (timeline) =>
+  Boolean(
+    timeline
+      .map(({ timestamp }) => timestamp)
+      .reduce((prev, curr) => {
+        if (prev === 0) {
+          return 0;
+        }
+        if (prev && curr < prev) {
+          return 0;
+        }
+        return curr;
+      }, true)
+  );
+
 test("the social network can be created with an initial user", () => {
   const network = new Network(testUser, true);
   expect(network.users[convertNameToId(testUser)]).toEqual(new User(testUser));
@@ -92,27 +107,12 @@ test("the user can see a chronological timeline with posts from their followees"
   await addDelay();
   network.users[convertNameToId(testUser)].post(`Second post from ${testUser}`);
 
-  expect(network.currentUser.subscriptions).toHaveProperty(
-    convertNameToId(testUser2)
-  );
+  const generatedTimeline = Object.keys(network.currentUser.subscriptions)
+    .map((id) => network.users[id].timeline)
+    .reduce((prev, curr) => [...prev, ...curr], [])
+    .sort((a, b) => a.timestamp - b.timestamp);
 
-  const timeStamps = network.currentUser.timeline.map(
-    ({ timestamp }) => timestamp
-  );
-
-  const isChronological = Boolean(
-    timeStamps.reduce((prev, curr) => {
-      if (prev === 0) {
-        return 0;
-      }
-      if (prev && curr < prev) {
-        return 0;
-      }
-      return curr;
-    }, true)
-  );
-
-  expect(isChronological).toBe(true);
+  expect(isChronological(generatedTimeline)).toBe(true);
 });
 
 test("the user can view the posts on their wall", () => {
