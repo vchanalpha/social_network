@@ -3,10 +3,10 @@ const User = require("./user.js");
 const { validateName, convertNameToId } = require("./utils.js");
 class Network {
   constructor(names, testMode = false) {
+    this.testMode = Boolean(testMode);
     this.users = {};
     this.currentUser = null;
     this.init(names);
-    this.testMode = testMode;
   }
 
   styledPrompt(message) {
@@ -28,10 +28,9 @@ class Network {
           this.addUser(name);
         })
         .finally(() => {
-          if (!this.testMode) {
-            this.backToMenu();
-          }
+          this.backToMenu();
         });
+      return;
     }
 
     if (typeof names === "object") {
@@ -40,11 +39,13 @@ class Network {
       });
       this.currentUser = null;
       this.login();
+      return;
     }
 
     if (typeof names === "string") {
       this.addUser(names);
       this.backToMenu();
+      return;
     }
   };
 
@@ -54,11 +55,11 @@ class Network {
       this.users[id] = new User(name);
       this.currentUser = this.users[id];
     } else {
-      console.log(`A user with the name ${name} already exists.`);
+      if (!this.testMode) {
+        console.log(`A user with the name ${name} already exists.`);
+      }
       if (onFail) {
         onFail();
-      } else {
-        return;
       }
     }
   };
@@ -87,6 +88,8 @@ class Network {
   };
 
   login = async () => {
+    if (this.testMode) return;
+
     const choices = Object.values(this.users).map(({ id, name }) => ({
       name,
       value: id,
@@ -137,13 +140,15 @@ class Network {
   };
 
   backToMenu = () => {
-    if (!this.testMode) {
-      console.log("\n");
-      this.menu();
-    }
+    if (this.testMode) return;
+
+    console.log("\n");
+    this.menu();
   };
 
   menu = async () => {
+    if (this.testMode) return false;
+
     await select({
       loop: false,
       pageSize: 10,
