@@ -2,10 +2,11 @@ const { input, select, Separator } = require("@inquirer/prompts");
 const User = require("./user.js");
 const { validateName, convertNameToId } = require("./utils.js");
 class Network {
-  constructor(names) {
+  constructor(names, testMode = false) {
     this.users = {};
     this.currentUser = null;
     this.init(names);
+    this.testMode = testMode;
   }
 
   styledPrompt(message) {
@@ -27,7 +28,9 @@ class Network {
           this.addUser(name);
         })
         .finally(() => {
-          this.backToMenu();
+          if (!this.testMode) {
+            this.backToMenu();
+          }
         });
     }
 
@@ -134,8 +137,10 @@ class Network {
   };
 
   backToMenu = () => {
-    console.log("\n");
-    this.menu();
+    if (!this.testMode) {
+      console.log("\n");
+      this.menu();
+    }
   };
 
   menu = async () => {
