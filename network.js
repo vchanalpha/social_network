@@ -104,9 +104,31 @@ class Network {
       });
   };
 
-  timeline = async () => {
-    this.currentUser.getTimeline();
+  timeline = async (user) => {
+    if (user) {
+      user.getTimeline();
+    }
+    else {
+      this.currentUser.getTimeline();
+    }
     this.menu();
+  };
+
+  viewSubscribedTimeline = async () => {
+    let subscriptions = this.currentUser.subscriptions;
+    const choices = Object.values(subscriptions).map(({ id, name }) => ({
+      name,
+      value: id,
+    }));
+    await select({
+      message: this.styledPrompt("Select the user whose timeline you would like to view"),
+      choices,
+      loop: false,
+    })
+    .then((value) => {
+      var user = this.users[value];
+      this.timeline(user);
+    })
   };
 
   wall = async () => {
@@ -163,7 +185,7 @@ class Network {
         },
         {
           name: "View timeline of user I have subscribed to",
-          value: "timeline",
+          value: "viewSubscribedTimeline",
           description: "",
         },
         {
