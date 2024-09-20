@@ -114,7 +114,7 @@ class Network {
   follow = async () => {
     let subscriptions = this.currentUser.subscriptions;
     var choices = Object.values(this.users).reduce((filtered, option) => {
-      if (!subscriptions[option.id]) {
+      if (!subscriptions[option.id] && option.name !== this.currentUser.name) {
         filtered.push({ name: option.name, value: option.name });
       }
       return filtered;
@@ -126,6 +126,7 @@ class Network {
     })
       .then((value) => {
         this.currentUser.follow(value);
+        this.currentUser.getSubscriptions();
       })
       .finally(() => {
         this.backToMenu();

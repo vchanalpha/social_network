@@ -38,7 +38,7 @@ class User {
       return;
     }
     Object.values(this.subscriptions).forEach((subscription) => {
-      subscription.name.print();
+      subscription.print();
     });
   }
 
