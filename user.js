@@ -32,6 +32,17 @@ class User {
     });
   }
 
+  getSubscribedTimeline(user) {
+    if (!user.timeline.length) {
+      console.log(`${user}'s timeline is empty.\n`);
+      return null;
+    }
+    user.timeline.forEach((post) => {
+      post.print();
+    });
+    return user.timeline;
+  }
+
   getSubscriptions() {
     if (!Object.values(this.subscriptions).keys) {
       console.log("You have no subscriptions.\n");

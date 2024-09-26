@@ -115,6 +115,19 @@ test("the user can see a chronological timeline with posts from their followees"
   expect(isChronological(generatedTimeline)).toBe(true);
 });
 
+test("the user can view the timeline of someone he has subscribed to", () => {
+  const network = new Network([testUser, testUser2, testUser3], true);
+  network.currentUser = network.users[convertNameToId(testUser)];
+  network.currentUser.follow(testUser2);
+  network.currentUser = network.users[convertNameToId(testUser2)];
+  network.currentUser.post(testMessage);
+  network.currentUser = network.users[convertNameToId(testUser)];
+  const userSubscribedTo = network.users[convertNameToId(testUser2)];
+  expect(network.currentUser
+    .getSubscribedTimeline(userSubscribedTo)[0].message)
+    .toBe(testMessage);
+});
+
 test("the user can view the posts on their wall", () => {
   expect(bestLaCroixFlavor()).toBe("grapefruit");
 });

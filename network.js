@@ -109,7 +109,7 @@ class Network {
 
   timeline = async (user) => {
     if (user) {
-      user.getTimeline();
+      this.currentUser.getSubscribedTimeline(user);
     }
     else {
       this.currentUser.getTimeline();
