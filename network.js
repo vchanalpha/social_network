@@ -1,6 +1,10 @@
 const { input, select, Separator } = require("@inquirer/prompts");
 const User = require("./user.js");
-const { validateName, convertNameToId } = require("./utils.js");
+const {
+  validateName,
+  convertNameToId,
+  formatTimeStamp,
+} = require("./utils.js");
 class Network {
   constructor(names, testMode = false) {
     this.testMode = Boolean(testMode);
@@ -9,7 +13,22 @@ class Network {
     this.init(names);
   }
 
-  styledPrompt(message) {
+  prompt(message) {
+    if (!message || this.testMode) {
+      return;
+    }
+    console.log(message);
+  }
+
+  // Methods
+  printPost(post) {
+    this.prompt(`[%s]`, post.name);
+    this.prompt(post.message);
+    this.prompt(formatTimeStamp(post.timestamp));
+    this.prompt(" ");
+  }
+
+  promptWithUser(message) {
     if (!this.currentUser) {
       return `[No user selected] ${message}`;
     }
@@ -19,7 +38,7 @@ class Network {
   init = async (names) => {
     if (!names) {
       await input({
-        message: this.styledPrompt(
+        message: this.promptWithUser(
           "You're the first user on the Social Network! What's your name?"
         ),
         validate: validateName,
@@ -56,7 +75,7 @@ class Network {
       this.currentUser = this.users[id];
     } else {
       if (!this.testMode) {
-        console.log(`A user with the name ${name} already exists.`);
+        this.prompt(`A user with the name ${name} already exists.`);
       }
       if (onFail) {
         onFail();
@@ -65,7 +84,7 @@ class Network {
   };
 
   post = async () => {
-    await input({ message: this.styledPrompt("What's your message?") })
+    await input({ message: this.promptWithUser("What's your message?") })
       .then((message) => {
         this.currentUser.post(message);
       })
@@ -76,7 +95,7 @@ class Network {
 
   register = async () => {
     await input({
-      message: this.styledPrompt("What's the new user's name?"),
+      message: this.promptWithUser("What's the new user's name?"),
       validate: validateName,
     })
       .then((name) => {
@@ -95,7 +114,7 @@ class Network {
       value: id,
     }));
     await select({
-      message: this.styledPrompt("Select your user account"),
+      message: this.promptWithUser("Select your user account"),
       choices,
       loop: false,
     })
@@ -124,13 +143,13 @@ class Network {
     }));
 
     if (!choices.length) {
-      console.log("You haven't followed anyone yet.");
+      this.prompt("You haven't followed anyone yet.");
       this.backToMenu();
       return;
     }
 
     await select({
-      message: this.styledPrompt(
+      message: this.promptWithUser(
         "Select the user whose timeline you would like to view"
       ),
       choices,
@@ -141,14 +160,16 @@ class Network {
     });
   };
 
-  wall = async () => {
-    console.log("\n --- Timeline --- \n");
-    Object.keys(this.currentUser.subscriptions)
+  wall = () => {
+    this.prompt("\n --- Timeline --- \n");
+    const completeWall = Object.keys(this.currentUser.subscriptions)
       .map((id) => this.users[id].timeline)
       .reduce((prev, curr) => [...prev, ...curr], [])
-      .sort((a, b) => a.timestamp - b.timestamp)
-      .forEach((post) => post.print());
+      .sort((a, b) => a.timestamp - b.timestamp);
+
+    completeWall.forEach((post) => this.printPost(post));
     this.menu();
+    return completeWall;
   };
 
   follow = async () => {
@@ -162,13 +183,13 @@ class Network {
     }, []);
 
     if (!choices.length) {
-      console.log("You already follow everyone.");
+      this.prompt("You already follow everyone.");
       this.backToMenu();
       return;
     }
 
     await select({
-      message: this.styledPrompt("Select a user to follow"),
+      message: this.promptWithUser("Select a user to follow"),
       choices,
       loop: false,
     })
@@ -183,8 +204,7 @@ class Network {
 
   backToMenu = () => {
     if (this.testMode) return;
-
-    console.log("\n");
+    this.prompt("\n");
     this.menu();
   };
 
@@ -194,7 +214,7 @@ class Network {
     await select({
       loop: false,
       pageSize: 10,
-      message: this.styledPrompt(
+      message: this.promptWithUser(
         `Welcome to the Social Network. What would you like to do now?`
       ),
       choices: [
@@ -236,7 +256,7 @@ class Network {
         },
       ],
     }).then((value) => {
-      console.log("\n");
+      this.prompt("\n");
       this[value]();
     });
   };

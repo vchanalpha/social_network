@@ -2,13 +2,10 @@ const Network = require("./network.js");
 const User = require("./user.js");
 const { convertNameToId } = require("./utils.js");
 
-const bestLaCroixFlavor = () => "grapefruit";
-
 const testUser = "Test User";
 const testUser2 = "James";
 const testMessage = "timeline message!";
 const testUser3 = "John";
-const testUser4 = "Mary";
 
 const addDelay = async () => {
   return new Promise((resolve) => setTimeout(resolve, 1));
@@ -107,12 +104,9 @@ test("the user can see a chronological timeline with posts from their followees"
   await addDelay();
   network.users[convertNameToId(testUser)].post(`Second post from ${testUser}`);
 
-  const generatedTimeline = Object.keys(network.currentUser.subscriptions)
-    .map((id) => network.users[id].timeline)
-    .reduce((prev, curr) => [...prev, ...curr], [])
-    .sort((a, b) => a.timestamp - b.timestamp);
+  const usersWall = network.wall();
 
-  expect(isChronological(generatedTimeline)).toBe(true);
+  expect(isChronological(usersWall)).toBe(true);
 });
 
 test("the user can view the timeline of someone he has subscribed to", () => {
