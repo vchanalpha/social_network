@@ -34,7 +34,7 @@ class User {
 
   getSubscribedTimeline(user) {
     if (!user.timeline.length) {
-      console.log(`${user}'s timeline is empty.\n`);
+      console.log(`${user.name}'s timeline is empty.\n`);
       return null;
     }
     user.timeline.forEach((post) => {
@@ -44,13 +44,20 @@ class User {
   }
 
   getSubscriptions() {
-    if (!Object.values(this.subscriptions).keys) {
+    if (!Object.values(this.subscriptions).length) {
       console.log("You have no subscriptions.\n");
       return;
     }
+
+    this.printSubscriptions();
+  }
+
+  printSubscriptions() {
+    console.log("\nYou are currently following:");
     Object.values(this.subscriptions).forEach((subscription) => {
-      subscription.print();
+      subscription.list();
     });
+    console.log("");
   }
 
   // Methods

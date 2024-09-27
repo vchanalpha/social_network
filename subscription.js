@@ -8,12 +8,17 @@ class Subscription {
     this.timestamp = Date.now(); // new Date(Date.now()).toISOString();
   }
 
-    // Methods
-    print() {
-      console.log(`You started following %s`, this.name);
-      console.log(formatTimeStamp(this.timestamp));
-      console.log(" ");
-    }
+  // Methods
+  print() {
+    console.log(`You started following %s`, this.name);
+    console.log(formatTimeStamp(this.timestamp));
+    console.log(" ");
+  }
+
+  list() {
+    console.log(this.name, formatTimeStamp(this.timestamp));
+    console.log(" ");
+  }
 }
 
 module.exports = Subscription;
