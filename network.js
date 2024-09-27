@@ -110,8 +110,7 @@ class Network {
   timeline = async (user) => {
     if (user) {
       this.currentUser.getSubscribedTimeline(user);
-    }
-    else {
+    } else {
       this.currentUser.getTimeline();
     }
     this.menu();
@@ -123,15 +122,23 @@ class Network {
       name,
       value: id,
     }));
+
+    if (!choices.length) {
+      console.log("You haven't followed anyone yet.");
+      this.backToMenu();
+      return;
+    }
+
     await select({
-      message: this.styledPrompt("Select the user whose timeline you would like to view"),
+      message: this.styledPrompt(
+        "Select the user whose timeline you would like to view"
+      ),
       choices,
       loop: false,
-    })
-    .then((value) => {
+    }).then((value) => {
       var user = this.users[value];
       this.timeline(user);
-    })
+    });
   };
 
   wall = async () => {
@@ -141,12 +148,20 @@ class Network {
 
   follow = async () => {
     let subscriptions = this.currentUser.subscriptions;
+
     var choices = Object.values(this.users).reduce((filtered, option) => {
       if (!subscriptions[option.id] && option.name !== this.currentUser.name) {
         filtered.push({ name: option.name, value: option.name });
       }
       return filtered;
     }, []);
+
+    if (!choices.length) {
+      console.log("You already follow everyone.");
+      this.backToMenu();
+      return;
+    }
+
     await select({
       message: this.styledPrompt("Select a user to follow"),
       choices,
