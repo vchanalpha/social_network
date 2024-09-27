@@ -73,7 +73,7 @@ class User {
   getWall() {}
 
   post(message) {
-    this.timeline.push(new Post(this.id, this.name, message));
+    this.timeline.unshift(new Post(this.id, this.name, message));
   }
 }
 
