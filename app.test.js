@@ -123,11 +123,7 @@ test("the user can view the timeline of someone he has subscribed to", () => {
   network.currentUser.post(testMessage);
   network.currentUser = network.users[convertNameToId(testUser)];
   const userSubscribedTo = network.users[convertNameToId(testUser2)];
-  expect(network.currentUser
-    .getSubscribedTimeline(userSubscribedTo)[0].message)
-    .toBe(testMessage);
-});
-
-test("the user can view the posts on their wall", () => {
-  expect(bestLaCroixFlavor()).toBe("grapefruit");
+  expect(
+    network.currentUser.getSubscribedTimeline(userSubscribedTo)[0].message
+  ).toBe(testMessage);
 });

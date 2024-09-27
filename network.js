@@ -142,7 +142,12 @@ class Network {
   };
 
   wall = async () => {
-    this.currentUser.getWall();
+    console.log("\n --- Timeline --- \n");
+    Object.keys(this.currentUser.subscriptions)
+      .map((id) => this.users[id].timeline)
+      .reduce((prev, curr) => [...prev, ...curr], [])
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .forEach((post) => post.print());
     this.menu();
   };
 

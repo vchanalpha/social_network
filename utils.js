@@ -33,9 +33,7 @@ const validateName = (varName) => {
   return pat.test(varName);
 };
 
-const formatTimeStamp = (varName) => {
-  var d = new Date();
-
+const formatTimeStamp = (date) => {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "numeric",
@@ -44,7 +42,7 @@ const formatTimeStamp = (varName) => {
     minute: "2-digit",
     second: "2-digit",
     hour12: true,
-  }).format(new Date());
+  }).format(date);
 };
 
 module.exports = {
